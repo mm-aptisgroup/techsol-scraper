@@ -15,8 +15,6 @@ def scrape_links(url):
         return list(set(links))
     except:
         return []
-    except:
-        return []
 
 st.title("TechSol Scraper")
 url = st.text_input("Enter Website URL")

@@ -1,7 +1,5 @@
 import streamlit as st
 import requests
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 import openpyxl
 import re
 
@@ -9,14 +7,14 @@ def scrape_links(url):
     try:
         headers = {'User-Agent': 'Mozilla/5.0'}
         r = requests.get(url, headers=headers, timeout=10)
-        soup = BeautifulSoup(r.text, 'html.parser')
         links = []
-        for a in soup.find_all('a', href=True):
-            full = urljoin(url, a['href'])
-            text = a.get_text().strip()
-            if full.startswith('http') and re.search(r'AI|tool|app|platform', text+full, re.I):
-                links.append((full, text))
+        for match in re.finditer(r'https?://[^\s"\'<>]+', r.text):
+            full = match.group(0)
+            if re.search(r'AI|tool|app|platform', full, re.I):
+                links.append((full, full))
         return list(set(links))
+    except:
+        return []
     except:
         return []
 
